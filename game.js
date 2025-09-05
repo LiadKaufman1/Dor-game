@@ -24,7 +24,7 @@ pearImg.src = "אגס.PNG";           // קליע
 const fanImg = new Image();
 fanImg.src = "מאוורר.jpg";        // אויב
 const redFanImg = new Image();
-redFanImg.src = "RedFan.PNG";     // מאוורר אדום
+redFanImg.src = "RedFan.png";     // מאוורר אדום
 const electricImg = new Image();
 electricImg.src = "חשמל.PNG";     // פאוור-אפ חשמל
 
