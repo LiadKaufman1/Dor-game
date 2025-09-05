@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dor vs Fans</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Dor vs Fans</h1>
+    <div class="hud">
+      <span id="score">נקודות: 0</span>
+      <span id="lives">חיים: 3</span>
+      <span id="timer">זמן: 0:00</span>
+      <button id="restart">התחל מחדש</button>
+    </div>
+    <p class="hint">🕹️ זוז עם ⬅️➡️ או העכבר • ירי עם רווח / קליק • ⚡ חשמל = דאבל נקודות</p>
+  </header>
+  <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px;">
+    <div id="gameTimer" style="background: #151922; padding: 20px; border-radius: 10px; border: 1px solid #232838; text-align: center; min-width: 200px;">
+      <div id="bigTimer" style="font-size: 32px; font-weight: bold; color: #e7edf3; margin-bottom: 10px;">0:00.00</div>
+      <div id="levelIndicator" style="font-size: 18px; color: #9aa4b2;">שלב: 1</div>
+    </div>
+    <canvas id="game" width="1200" height="700"></canvas>
+    <div id="levelGuide" style="background: #151922; padding: 20px; border-radius: 10px; border: 1px solid #232838; min-width: 200px;">
+      <h3 style="color: #e7edf3; margin-top: 0; font-size: 18px; text-align: center;">שלבי קושי</h3>
+      <div style="color: #9aa4b2; font-size: 14px; line-height: 1.5;">
+        <div><strong>שלב 1:</strong> איטי (0-15 שנ')</div>
+        <div><strong>שלב 2:</strong> רגיל (15-30 שנ')</div>
+        <div><strong>שלב 3:</strong> מהיר (30-45 שנ')</div>
+        <div><strong>שלב 4:</strong> מהיר מאוד (45-60 שנ')</div>
+        <div><strong>שלב 5:</strong> קיצוני (60-75 שנ')</div>
+        <div><strong>שלב 6:</strong> בלתי אפשרי (75+ שנ')</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <small>Created by Liad Kaufman</small><br>
+    <small>Music: Menumas - Happiness</small>
+  </footer>
+
+  <script src="game.js"></script>
+</body>
+</html>
