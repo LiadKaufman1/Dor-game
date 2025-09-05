@@ -9,7 +9,7 @@ const livesEl = document.getElementById('lives');
 const timerEl = document.getElementById('timer');
 const bigTimerEl = document.getElementById('bigTimer');
 const levelIndicatorEl = document.getElementById('levelIndicator');
-const restartBtn = document.getElementById('restart');
+
 
 // Audio
 const bgm = new Audio("music.mp3");
@@ -93,7 +93,14 @@ function updateHUD(){
     indicatorEl.style.display = 'none';
   }
 }
-restartBtn.addEventListener('click', reset);
+
+
+// קליק על הקנבס להתחלה מחדש כשהמשחק נגמר
+canvas.addEventListener('click', () => {
+  if (!running) {
+    reset();
+  }
+});
 
 // Start audio on first interaction
 let audioStarted = false;
@@ -135,17 +142,27 @@ function rectsIntersect(a,b){
 // Spawn enemies (fans) and powerups from top
 function spawnEnemy(dt){
   spawnTimer += dt;
-  if (spawnTimer >= 0.51){ // כל 0.51 שנ׳ (5% יותר איטי)
+  
+  // תדירות נפילה: 20% יותר מהר בכל שלב
+  const spawnRate = 0.51 / (1 + (difficultyLevel * 0.2));
+  
+  if (spawnTimer >= spawnRate){
     spawnTimer = 0;
     const size = 76 + Math.random()*34; // 76-110px
     const x = Math.random() * (W - size);
     const baseSpeed = (1.6 + Math.random()*1.6) * 0.85 * 0.97;
+    
+    // מהירות: 10% יותר מהר בכל שלב + המערכת הקיימת
     let speedMultiplier;
     if (difficultyLevel === 0) {
       speedMultiplier = 0.7; // שלב 1: 30% יותר איטי
     } else {
       speedMultiplier = 1 + ((difficultyLevel - 1) * 0.2); // משלב 2: 20% יותר מהיר כל שלב
     }
+    
+    // הוספת 10% מהירות נוספת בכל שלב
+    speedMultiplier *= (1 + (difficultyLevel * 0.1));
+    
     const vy = baseSpeed * speedMultiplier;
     
     // 9% סיכוי למאוורר אלכסוני
@@ -167,7 +184,7 @@ function spawnEnemy(dt){
 // Shoot pears upward from the head's forehead
 function shoot(ts){
   if (!keys.shooting) return;
-  if (ts - lastShot < 220) return; // cadence
+  if (ts - lastShot < 192) return; // cadence (4% יותר מהיר)
   lastShot = ts;
   const bw = 40, bh = 40;
   bullets.push({
@@ -339,15 +356,42 @@ function draw(){
   }
 
   if (!running){
-    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(0,0,W,H);
-    ctx.fillStyle = '#fff';
-    ctx.font = '28px system-ui';
-    const msg = `נגמר! — לחץ "התחל מחדש"`;
-    const scoreMsg = `ניקוד: ${score}`;
-    const tw = ctx.measureText(msg).width;
-    ctx.fillText(scoreMsg, (W-tw)/2 + 315, H/2 - 40);
-    ctx.fillText(msg, (W-tw)/2 + 315, H/2);
+    // ניקוי מלא ואיפוס כל הסטיילים
+    const canvas2 = document.createElement('canvas');
+    canvas2.width = W;
+    canvas2.height = H;
+    const ctx2 = canvas2.getContext('2d');
+    
+    ctx2.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx2.fillRect(0,0,W,H);
+    ctx2.fillStyle = '#fff';
+    ctx2.font = '28px system-ui';
+    
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(canvas2, 0, 0);
+    const scoreMsg = `Score: ${score}`;
+    const msg = `Game Over! — Click here to restart`;
+    
+    const scoreTw = ctx.measureText(scoreMsg).width;
+    const msgTw = ctx.measureText(msg).width;
+    const scoreX = W/2 - scoreTw/2 - 50;
+    const msgX = W/2 - msgTw/2 - 100;
+    
+    ctx2.fillText(scoreMsg, scoreX, H/2 - 40);
+    ctx2.fillText(msg, msgX, H/2);
+    
+    // קו מתחת למילה "here"
+    const hereStart = ctx2.measureText('Game Over! — Click ').width;
+    const hereWidth = ctx2.measureText('here').width;
+    
+    ctx2.strokeStyle = '#fff';
+    ctx2.lineWidth = 2;
+    ctx2.beginPath();
+    ctx2.moveTo(msgX + hereStart, H/2 + 5);
+    ctx2.lineTo(msgX + hereStart + hereWidth, H/2 + 5);
+    ctx2.stroke();
+    
+    ctx.drawImage(canvas2, 0, 0);
   }
 }
 
